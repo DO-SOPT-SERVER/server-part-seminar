@@ -2,7 +2,6 @@ package com.server.dosopt.seminar.controller;
 
 
 import com.server.dosopt.seminar.dto.HealthCheckResponse;
-import com.server.dosopt.seminar.sample.Person;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,11 +28,6 @@ public class HealthCheckController {
 
     @GetMapping("/v3")
     public String healthCheckV3() {
-        Person person = new Person("최", "윤한");
-        Person person2 = Person.builder()
-                .lastName("최")
-                .firstName("윤한")
-                .build();
         return "OK";
     }
 
