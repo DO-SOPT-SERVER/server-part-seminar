@@ -7,6 +7,7 @@ import com.example.seminar.dto.request.member.MemberCreateRequest;
 import com.example.seminar.dto.request.member.MemberProfileUpdateRequest;
 import com.example.seminar.dto.response.MemberGetResponse;
 import com.example.seminar.repository.MemberJpaRepository;
+import com.example.seminar.repository.querydsl.MemberQueryDslRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 public class MemberService {
 
     private final MemberJpaRepository memberJpaRepository;
+    private final MemberQueryDslRepository memberQueryDslRepository;
 
     public MemberGetResponse getMemberByIdV1(Long id) {
         Member member = memberJpaRepository.findById(id).get();
@@ -59,8 +61,13 @@ public class MemberService {
     }
 
     @Transactional
+    public void updateGeneration(Long memberId, MemberProfileUpdateRequest request) {
+        memberQueryDslRepository.updateMemberGeneration(request.getGeneration(), memberId);
+    }
+
+    @Transactional
     public void deleteMember(Long memberId) {
         Member member = memberJpaRepository.findByIdOrThrow(memberId);
-        memberJpaRepository.delete(member);
+        member.softDelete();
     }
 }

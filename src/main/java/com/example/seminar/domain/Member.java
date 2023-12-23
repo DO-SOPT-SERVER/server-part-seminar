@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,8 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseTimeEntity{
+
+    private static final Long MEMBER_INFO_RETENTION_PERIOD = 30L;
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,6 +27,10 @@ public class Member extends BaseTimeEntity{
     @Embedded
     private SOPT sopt;
 
+    private boolean isDeleted = false;
+    private LocalDateTime deletedAt;
+
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private final List<Post> posts = new ArrayList<>();
 
@@ -33,6 +40,17 @@ public class Member extends BaseTimeEntity{
         this.nickname = nickname;
         this.age = age;
         this.sopt = sopt;
+    }
+
+
+    public void softDelete() {
+        this.isDeleted = true;
+        this.deletedAt = LocalDateTime.now().plusDays(MEMBER_INFO_RETENTION_PERIOD);
+    }
+
+    public void recover() {
+        this.isDeleted = false;
+        this.deletedAt = null;
     }
 
     public void updateSOPT(SOPT sopt) {
